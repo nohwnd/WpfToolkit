@@ -81,26 +81,10 @@ namespace WpfToolkit
 
         public void Init(string propertyName)
         {
-            Console.WriteLine($"Initializing '{propertyName}'");
-            Console.WriteLine($"this value is  '{this}'");
             if (string.IsNullOrWhiteSpace(propertyName))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(propertyName));
             
-            InitScript.Dump("init script");
             InvokeCommand.NewScriptBlock(InitScript).Invoke(this, propertyName);
-            
-
-            //sb.Invoke();
-            //$@"
-            //param($self)
-            //Write-Host ('x'+($self)+'x')
-            //$self | Add-Member -MemberType ScriptMethod -Name Set{propertyName} -Value {{
-            //    param($value)
-            //    $this.Value = $value
-            //    this.OnPropertyChanged('{propertyName}')
-            //}}
-            //").Invoke(this);
-            Console.WriteLine($"Done - initializing '{propertyName}");
         }
     }
 }

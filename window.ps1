@@ -3,16 +3,19 @@
 Add-Type -Path  "C:\projects\WPwshF\WpfInPowerShell\Toolkit\bin\Debug\Toolkit.dll"
 [WpfToolkit.ViewModelBase]::InvokeCommand = $ExecutionContext.InvokeCommand
 [WpfToolkit.ViewModelBase]::InitScript = {
+    # could also be implemented as Action<> that we set directly
+    # from powershell
     param($self, $PropertyName)
-    Write-Host 'x' + ($self) + 'x'
-    Write-Host 'x' + ($PropertyName) + 'x'
-    $self | Add-Member -MemberType ScriptMethod -Name "Set$PropertyName" -Value ([ScriptBlock]::Create("
-        param(`$value)
-        Write-Host ""value is `$value""
-         Write-Host ""this is `$this""
-        `$this.'$PropertyName' = `$value
-        `$this.OnPropertyChanged('$PropertyName')
-    "))
+    $self | 
+        Add-Member -MemberType ScriptMethod -Name "Set$PropertyName" -Value ([ScriptBlock]::Create("
+            param(`$value)
+            `$this.'$PropertyName' = `$value
+            `$this.OnPropertyChanged('$PropertyName')
+        ")) -PassThru | 
+        Add-Member -MemberType ScriptMethod -Name "Get$PropertyName" -Value ([ScriptBlock]::Create("
+            `$this.'$PropertyName'
+        "))
+        
 
     $self | Get-Member -MemberType ScriptMethod | Out-String | Write-Host
 }
@@ -24,26 +27,11 @@ class MainViewModel : WpfToolkit.ViewModelBase {
     [Windows.Input.ICommand] $Click 
 
     MainViewModel () {
-        # $this | 
-        #     Add-Member -MemberType ScriptMethod -Name SetValue -Value {
-        #         param($value) 
-        #         $this.Value = $value
-        #         $this.OnPropertyChanged("Value")
-        #     }
-
         $this.Init('Value')
-   #     $this.SetValue(1)
 
         $this.Click = $this.Factory.RelayCommand({
-            param($self, $o)
-   
-            # change the value of the Value property and
-            # notify the ui about the update
-            # in the view (UI) you should see the value updated
-            #$self.Value += "=*"
-            #$self.OnPropertyChanged("Value")
-            $self.SetValue($self.Value + "=*")
-   
+            param($this, $o)
+            $this.SetValue($this.Value + "=*")
         })
 
 
