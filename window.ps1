@@ -1,42 +1,6 @@
 ﻿
-# run this first manually, the powershell class below needs this type
-Add-Type -Path  "C:\projects\WPwshF\WpfInPowerShell\Toolkit\bin\Debug\Toolkit.dll"
-[WpfToolkit.ViewModelBase]::InvokeCommand = $ExecutionContext.InvokeCommand
-[WpfToolkit.ViewModelBase]::InitScript = {
-    # could also be implemented as Action<> that we set directly
-    # from powershell
-    param($self, $PropertyName)
-    $self | 
-        Add-Member -MemberType ScriptMethod -Name "Set$PropertyName" -Value ([ScriptBlock]::Create("
-            param(`$value)
-            `$this.'$PropertyName' = `$value
-            `$this.OnPropertyChanged('$PropertyName')
-        ")) -PassThru | 
-        Add-Member -MemberType ScriptMethod -Name "Get$PropertyName" -Value ([ScriptBlock]::Create("
-            `$this.'$PropertyName'
-        "))
-        
-
-    $self | Get-Member -MemberType ScriptMethod | Out-String | Write-Host
-}
-
-
-class MainViewModel : WpfToolkit.ViewModelBase {
-    [String] $Value = "*"
-   
-    [Windows.Input.ICommand] $Click 
-
-    MainViewModel () {
-        $this.Init('Value')
-
-        $this.Click = $this.Factory.RelayCommand({
-            param($this, $o)
-            $this.SetValue($this.Value + "=*")
-        })
-
-
-    }
-}
+. "$PSScriptRoot\wpf.ps1"
+. "$PSScriptRoot\viewModels.ps1"
 
 [xml]$xaml = @"
 <Window
@@ -51,7 +15,7 @@ class MainViewModel : WpfToolkit.ViewModelBase {
 </Window>
 "@ 
 
-$reader=(New-Object System.Xml.XmlNodeReader $xaml)
+$reader=New-Object System.Xml.XmlNodeReader $xaml
 $Window=[Windows.Markup.XamlReader]::Load( $reader )
 $Window.DataContext = [MainViewModel]::new()
 $Window.ShowDialog()

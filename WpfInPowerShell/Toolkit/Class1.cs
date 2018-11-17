@@ -37,33 +37,9 @@ namespace WpfToolkit
         }
     }
 
-    public class Factory
-    {
-        private readonly object _self;
-
-        public Factory(object self)
-        {
-            _self = self;
-        }
-
-        public RelayCommand RelayCommand(
-            Action<object, object> execute,
-            Func<object, object, bool> canExecute = null)
-        {
-            return new RelayCommand(_self, execute, canExecute);
-        }
-    }
 
     public abstract class ViewModelBase :  INotifyPropertyChanged
     {
-        protected ViewModelBase()
-        {
-            
-            Console.WriteLine("Creating vm base with "+ this.GetType().Name );
-            Factory = new Factory(this);
-            Console.WriteLine($"Created vm. with {this.Factory.GetType().Name}");
-        }
-
         public static CommandInvocationIntrinsics InvokeCommand { get; set; }
         public static string InitScript { get; set; }
 
@@ -75,9 +51,12 @@ namespace WpfToolkit
             PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public Factory Factory { get; set; }
-
-
+        public RelayCommand NewCommand(
+            Action<object, object> execute,
+            Func<object, object, bool> canExecute = null)
+        {
+            return new RelayCommand(this, execute, canExecute);
+        }
 
         public void Init(string propertyName)
         {
