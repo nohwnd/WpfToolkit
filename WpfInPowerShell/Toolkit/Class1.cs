@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
 using System.ComponentModel;
+using System.Management.Automation;
+using ConsoleDump;
 
 namespace WpfToolkit
 {
@@ -52,14 +54,18 @@ namespace WpfToolkit
         }
     }
 
-    public abstract class ViewModelBase : INotifyPropertyChanged
+    public abstract class ViewModelBase :  INotifyPropertyChanged
     {
         protected ViewModelBase()
         {
+            
             Console.WriteLine("Creating vm base with "+ this.GetType().Name );
             Factory = new Factory(this);
             Console.WriteLine($"Created vm. with {this.Factory.GetType().Name}");
         }
+
+        public static CommandInvocationIntrinsics InvokeCommand { get; set; }
+        public static string InitScript { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
@@ -70,5 +76,31 @@ namespace WpfToolkit
         }
 
         public Factory Factory { get; set; }
+
+
+
+        public void Init(string propertyName)
+        {
+            Console.WriteLine($"Initializing '{propertyName}'");
+            Console.WriteLine($"this value is  '{this}'");
+            if (string.IsNullOrWhiteSpace(propertyName))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(propertyName));
+            
+            InitScript.Dump("init script");
+            InvokeCommand.NewScriptBlock(InitScript).Invoke(this, propertyName);
+            
+
+            //sb.Invoke();
+            //$@"
+            //param($self)
+            //Write-Host ('x'+($self)+'x')
+            //$self | Add-Member -MemberType ScriptMethod -Name Set{propertyName} -Value {{
+            //    param($value)
+            //    $this.Value = $value
+            //    this.OnPropertyChanged('{propertyName}')
+            //}}
+            //").Invoke(this);
+            Console.WriteLine($"Done - initializing '{propertyName}");
+        }
     }
 }
