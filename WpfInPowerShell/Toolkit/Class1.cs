@@ -56,14 +56,16 @@ namespace WpfToolkit
     {
         protected ViewModelBase()
         {
+            Console.WriteLine("Creating vm base with "+ this.GetType().Name );
             Factory = new Factory(this);
+            Console.WriteLine($"Created vm. with {this.Factory.GetType().Name}");
         }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         public virtual void OnPropertyChanged(string propertyName)
         {
-            Console.WriteLine("Notified " + propertyName);
+            Console.WriteLine("Notified property '" + propertyName +"'");
             PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 

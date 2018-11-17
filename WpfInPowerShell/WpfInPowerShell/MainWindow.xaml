@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:WpfInPowerShell"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <StackPanel>
+        <TextBox Text="{Binding A}"></TextBox>
+        <TextBox Text="{local:PBinding B}"></TextBox>
         
-    </Grid>
+    </StackPanel>
 </Window>

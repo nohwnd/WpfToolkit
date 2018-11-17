@@ -2,19 +2,22 @@
 # run this first manually, the powershell class below needs this type
 Import-Module "C:\projects\WPwshF\WpfInPowerShell\Toolkit\bin\Debug\Toolkit.dll"
 
-class MainViewModel : ViewModelBase {
-    [String] $Value = "hello"
+class MainViewModel : WpfToolkit.ViewModelBase {
+    [String] $Value = "*"
+    [Windows.Input.ICommand] $Click 
 
-    [System.Windows.Input.ICommand] $Click = [RelayCommand]::new($this, {
-        param($self, $o)
-       
-        # change the value of the Value property and 
-        # notify the ui about the update
-        # in the view (UI) you should see the value updated
-        $self.Value = "gef"
-        $self.OnPropertyChanged("Value")
-  
-    }, { $true })
+    MainViewModel () {
+        $this.Click = $this.Factory.RelayCommand({
+            param($self, $o)
+
+            # change the value of the Value property and
+            # notify the ui about the update
+            # in the view (UI) you should see the value updated
+            $self.Value += "=*"
+            $self.OnPropertyChanged("Value")
+
+        })
+    }
 }
 
 [xml]$xaml = @"
