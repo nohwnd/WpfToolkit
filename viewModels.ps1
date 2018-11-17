@@ -2,9 +2,11 @@
 class MainViewModel : WpfToolkit.ViewModelBase {
     [String] $Value = "*"
     [Windows.Input.ICommand] $Click 
+    [int] $Progress
 
     MainViewModel () {
         $this.Init('Value')
+        $this.Init('Progress')
 
         $this.Click = $this.NewCommand({
             param($this, $o)
@@ -13,7 +15,11 @@ class MainViewModel : WpfToolkit.ViewModelBase {
             $work = {       
                 "$(Get-Date) Ping" | Out-File -FilePath "c:\temp\put.txt" -Append
                 
-                Start-Sleep -Seconds 4
+                [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke({ $syncHash.this.SetProgress(10)});
+                Start-Sleep -Seconds 2
+                 [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke({ $syncHash.this.SetProgress(50)});
+                 Start-Sleep -Seconds 2
+                  [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke({ $syncHash.this.SetProgress(99)});
 
 
                 [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke({ 

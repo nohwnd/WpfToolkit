@@ -11,6 +11,7 @@
     <StackPanel>
         <TextBox Text="{Binding Value}" />
         <Button Command="{Binding Click}" Content="Click me!" />
+        <ProgressBar Value="{Binding Progress}" Height="10" />
     </StackPanel>
 </Window>
 "@ 
