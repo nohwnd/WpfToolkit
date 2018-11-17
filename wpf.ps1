@@ -1,4 +1,6 @@
 ﻿Add-Type -Path  "C:\projects\WPwshF\WpfInPowerShell\Toolkit\bin\Debug\Toolkit.dll"
+Import-Module "C:\projects\WPwshF\ObservableConcurrentQueue.dll"
+
 [WpfToolkit.ViewModelBase]::InvokeCommand = $ExecutionContext.InvokeCommand
 [WpfToolkit.ViewModelBase]::InitScript = {
     # could also be implemented as Action<> that we set directly
