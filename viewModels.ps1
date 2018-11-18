@@ -1,10 +1,8 @@
 ﻿
-[xml]$xaml = @"
+[string]$xaml = @"
 <Window
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Name="Window" Title="Initial Window" WindowStartupLocation = "CenterScreen" 
-    Width = "800" Height = "600" ShowInTaskbar = "True">
+    Title="Initial Window" Width="800" Height="600">
     <Grid>
         <TextBox FontSize="24" Text="{Binding Text}" Grid.ColumnSpan="3" />
         <ProgressBar Value="{Binding Progress}" Grid.ColumnSpan="3" Grid.Row="1" />
@@ -27,8 +25,8 @@
 </Window>
 "@ 
 
-$reader=New-Object System.Xml.XmlNodeReader $xaml
-$Window=[Windows.Markup.XamlReader]::Load( $reader )
+
+$Window=[Windows.Markup.XamlReader]::Parse($xaml)
 $Window.DataContext = [MainViewModel]::new()
 $Window.ShowDialog()
 
