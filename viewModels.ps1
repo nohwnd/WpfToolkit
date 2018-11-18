@@ -1,67 +1,69 @@
 ﻿
+[xml]$xaml = @"
+<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Name="Window" Title="Initial Window" WindowStartupLocation = "CenterScreen" 
+    Width = "800" Height = "600" ShowInTaskbar = "True">
+    <Grid>
+        <TextBox FontSize="24" Text="{Binding Text}" Grid.ColumnSpan="3" />
+        <ProgressBar Value="{Binding Progress}" Grid.ColumnSpan="3" Grid.Row="1" />
+        
+        <Button Command="{Binding AddStar}" Content="Add *" Grid.Row="2" Grid.Column ="1" />
+        <Button Command="{Binding RunBackgroundTask}" Content="Run background task" Grid.Row="2" />
+        
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+    </Grid>
+</Window>
+"@ 
+
+$reader=New-Object System.Xml.XmlNodeReader $xaml
+$Window=[Windows.Markup.XamlReader]::Load( $reader )
+$Window.DataContext = [MainViewModel]::new()
+$Window.ShowDialog()
+
+
 class MainViewModel : WpfToolkit.ViewModelBase {
-    [String] $Value = "*"
-    [Windows.Input.ICommand] $Click 
+    [String] $Text = "*"
     [int] $Progress
+    [Windows.Input.ICommand] $RunBackgroundTask
+    [Windows.Input.ICommand] $AddStar
+    
 
     MainViewModel () {
-        $this.Init('Value')
+        $this.Init('Text')
         $this.Init('Progress')
 
-        $this.Click = $this.NewCommand({
+        $work = { 
             param($this, $o)
-
-            $psCmd = [powershell]::Create()
-            $work = {       
-                "$(Get-Date) Ping" | Out-File -FilePath "c:\temp\put.txt" -Append
-                
-                [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke({ $syncHash.this.SetProgress(10)});
-                Start-Sleep -Seconds 2
-                 [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke({ $syncHash.this.SetProgress(50)});
-                 Start-Sleep -Seconds 2
-                  [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke({ $syncHash.this.SetProgress(99)});
-
-
-                [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke({ 
-                    function w ($string) {
-                     $string | Out-File -FilePath "c:\temp\put.txt" -Append
-                    }
-
-                    w ("callback $($synchash.callback)")
-                    &$syncHash.CallBack $syncHash.This 
-                })
-
-
-            }
-            $callback = {  
-                    param($this)
-                    function w ($string) {
-                     $string | Out-File -FilePath "c:\temp\put.txt" -Append
-                    }
-
-
-                    w ($null -eq $this)
-                    
-                    
-                     "heelllooo" 
-                    $this.SetValue("2234")
-                    
-                    w "Dispatcher done"
-                    }
-
-            $syncHash = [hashtable]::Synchronized(@{ 
-                This = $this
-                CallBack = $callback })
-
-            $newRunspace =[runspacefactory]::CreateRunspace()      
-            $newRunspace.Open()
             
-            Write-Host "o is populated: " ($null-ne $syncHash)
-            $newRunspace.SessionStateProxy.SetVariable("syncHash",  $syncHash) 
-            $psCmd.Runspace = $newRunspace
-            $psCmd.AddScript($work)
+            Dispatch { $this.SetProgress(10) }
+            Start-Sleep -Seconds 2
 
-            $psCmd.BeginInvoke()
-        })
+            Dispatch { $this.SetProgress(50) }
+
+            Start-Sleep -Seconds 2
+            Dispatch { $this.SetProgress(90) }
+        }
+
+        $callback = {  
+            param($this)
+            
+            $this.SetText($this.Text + " Background task done. ")
+            $this.SetProgress(100)
+        }
+
+        $this.RunBackgroundTask = $this.NewBackgroundCommand($work, $callback)
+        $this.AddStar = $this.NewCommand({ $this.SetText($this.Text + "*") })
     }
 }

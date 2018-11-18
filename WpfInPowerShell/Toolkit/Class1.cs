@@ -42,6 +42,7 @@ namespace WpfToolkit
     {
         public static CommandInvocationIntrinsics InvokeCommand { get; set; }
         public static string InitScript { get; set; }
+        public static Func<ScriptBlock, ScriptBlock, Action<object, object>> BackgroundWorkScript { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
@@ -49,6 +50,14 @@ namespace WpfToolkit
         {
             Console.WriteLine("Notified property '" + propertyName +"'");
             PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public RelayCommand NewBackgroundCommand(
+            ScriptBlock backgroundWork,
+            ScriptBlock callback,
+            Func<object, object, bool> canExecute = null)
+        {
+            return new RelayCommand(this, BackgroundWorkScript(backgroundWork, callback), canExecute);
         }
 
         public RelayCommand NewCommand(
