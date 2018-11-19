@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     Title="Initial Window" Width="800" Height="600">
     <Grid>
-        <TextBox FontSize="24" Text="{Binding Text}" Grid.ColumnSpan="3" />
+        <TextBox FontSize="24" Text="{Binding Text}" Grid.ColumnSpan="3" TextWrapping="Wrap" />
         <ProgressBar Value="{Binding Progress}" Grid.ColumnSpan="3" Grid.Row="1" />
         
         <Button Command="{Binding AddStar}" Content="Add *" Grid.Row="2" Grid.Column ="1" />
@@ -31,7 +31,7 @@ $Window.DataContext = [MainViewModel]::new()
 $Window.ShowDialog()
 
 
-class MainViewModel : WpfToolkit.ViewModelBase {
+class MainViewModel : ViewModelBase {
     [String] $Text = "*"
     [int] $Progress
     [Windows.Input.ICommand] $RunBackgroundTask
@@ -39,6 +39,8 @@ class MainViewModel : WpfToolkit.ViewModelBase {
     
 
     MainViewModel () {
+        Write-Host "Constructing Main view Model"
+
         $this.Init('Text')
         $this.Init('Progress')
 
@@ -62,6 +64,11 @@ class MainViewModel : WpfToolkit.ViewModelBase {
         }
 
         $this.RunBackgroundTask = $this.NewBackgroundCommand($work, $callback)
-        $this.AddStar = $this.NewCommand({ $this.SetText($this.Text + "*") })
+         
+        $this.AddStar = $this.NewCommand({ 
+             
+            Write-Host "is `$this null?: $($null -eq $this)"
+            $this.SetText($this.Text + "*") 
+        })
     }
 }
