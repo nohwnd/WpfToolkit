@@ -1,5 +1,6 @@
-﻿Add-Type -Path  "C:\projects\WPwshF\WpfInPowerShell\Toolkit\bin\Debug\Toolkit.dll"
-Add-Type -AssemblyName PresentationFramework
+﻿Add-Type -AssemblyName PresentationFramework
+Add-Type -Path  "$PSScriptRoot\WpfInPowerShell\Toolkit\bin\Debug\Toolkit.dll"
+
 
 [WpfToolkit.ViewModelBase]::InvokeCommand = $ExecutionContext.InvokeCommand
 [WpfToolkit.ViewModelBase]::InitScript = {
