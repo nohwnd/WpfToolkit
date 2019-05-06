@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{75CC5F74-535F-4C09-B7F1-04B1FBB3447D}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>PokeBrowser</RootNamespace>
+    <AssemblyName>PokeBrowser</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="PokemonJson.cs" />
+    <Compile Include="Properties\AspChildControlTypeAttribute.cs" />
+    <Compile Include="Properties\AspDataFieldAttribute.cs" />
+    <Compile Include="Properties\AspDataFieldsAttribute.cs" />
+    <Compile Include="Properties\AspMethodPropertyAttribute.cs" />
+    <Compile Include="Properties\AspMvcActionAttribute.cs" />
+    <Compile Include="Properties\AspMvcActionSelectorAttribute.cs" />
+    <Compile Include="Properties\AspMvcAreaAttribute.cs" />
+    <Compile Include="Properties\AspMvcAreaMasterLocationFormatAttribute.cs" />
+    <Compile Include="Properties\AspMvcAreaPartialViewLocationFormatAttribute.cs" />
+    <Compile Include="Properties\AspMvcAreaViewLocationFormatAttribute.cs" />
+    <Compile Include="Properties\AspMvcControllerAttribute.cs" />
+    <Compile Include="Properties\AspMvcDisplayTemplateAttribute.cs" />
+    <Compile Include="Properties\AspMvcEditorTemplateAttribute.cs" />
+    <Compile Include="Properties\AspMvcMasterAttribute.cs" />
+    <Compile Include="Properties\AspMvcMasterLocationFormatAttribute.cs" />
+    <Compile Include="Properties\AspMvcModelTypeAttribute.cs" />
+    <Compile Include="Properties\AspMvcPartialViewAttribute.cs" />
+    <Compile Include="Properties\AspMvcPartialViewLocationFormatAttribute.cs" />
+    <Compile Include="Properties\AspMvcSuppressViewErrorAttribute.cs" />
+    <Compile Include="Properties\AspMvcTemplateAttribute.cs" />
+    <Compile Include="Properties\AspMvcViewAttribute.cs" />
+    <Compile Include="Properties\AspMvcViewComponentAttribute.cs" />
+    <Compile Include="Properties\AspMvcViewComponentViewAttribute.cs" />
+    <Compile Include="Properties\AspMvcViewLocationFormatAttribute.cs" />
+    <Compile Include="Properties\AspRequiredAttributeAttribute.cs" />
+    <Compile Include="Properties\AspTypePropertyAttribute.cs" />
+    <Compile Include="Properties\AssertionConditionAttribute.cs" />
+    <Compile Include="Properties\AssertionConditionType.cs" />
+    <Compile Include="Properties\AssertionMethodAttribute.cs" />
+    <Compile Include="Properties\BaseTypeRequiredAttribute.cs" />
+    <Compile Include="Properties\CannotApplyEqualityOperatorAttribute.cs" />
+    <Compile Include="Properties\CollectionAccessAttribute.cs" />
+    <Compile Include="Properties\CollectionAccessType.cs" />
+    <Compile Include="Properties\ContractAnnotationAttribute.cs" />
+    <Compile Include="Properties\HtmlAttributeValueAttribute.cs" />
+    <Compile Include="Properties\HtmlElementAttributesAttribute.cs" />
+    <Compile Include="Properties\ImplicitUseKindFlags.cs" />
+    <Compile Include="Properties\ImplicitUseTargetFlags.cs" />
+    <Compile Include="Properties\InstantHandleAttribute.cs" />
+    <Compile Include="Properties\InvokerParameterNameAttribute.cs" />
+    <Compile Include="Properties\ItemCanBeNullAttribute.cs" />
+    <Compile Include="Properties\ItemNotNullAttribute.cs" />
+    <Compile Include="Properties\LinqTunnelAttribute.cs" />
+    <Compile Include="Properties\LocalizationRequiredAttribute.cs" />
+    <Compile Include="Properties\MacroAttribute.cs" />
+    <Compile Include="Properties\MeansImplicitUseAttribute.cs" />
+    <Compile Include="Properties\MustUseReturnValueAttribute.cs" />
+    <Compile Include="Properties\NoEnumerationAttribute.cs" />
+    <Compile Include="Properties\NoReorderAttribute.cs" />
+    <Compile Include="Properties\NotifyPropertyChangedInvocatorAttribute.cs" />
+    <Compile Include="Properties\NotNullAttribute.cs" />
+    <Compile Include="Properties\PathReferenceAttribute.cs" />
+    <Compile Include="Properties\ProvidesContextAttribute.cs" />
+    <Compile Include="Properties\PublicAPIAttribute.cs" />
+    <Compile Include="Properties\PureAttribute.cs" />
+    <Compile Include="Properties\RazorDirectiveAttribute.cs" />
+    <Compile Include="Properties\RazorHelperCommonAttribute.cs" />
+    <Compile Include="Properties\RazorImportNamespaceAttribute.cs" />
+    <Compile Include="Properties\RazorInjectionAttribute.cs" />
+    <Compile Include="Properties\RazorLayoutAttribute.cs" />
+    <Compile Include="Properties\RazorPageBaseTypeAttribute.cs" />
+    <Compile Include="Properties\RazorSectionAttribute.cs" />
+    <Compile Include="Properties\RazorWriteLiteralMethodAttribute.cs" />
+    <Compile Include="Properties\RazorWriteMethodAttribute.cs" />
+    <Compile Include="Properties\RazorWriteMethodParameterAttribute.cs" />
+    <Compile Include="Properties\RegexPatternAttribute.cs" />
+    <Compile Include="Properties\SourceTemplateAttribute.cs" />
+    <Compile Include="Properties\StringFormatMethodAttribute.cs" />
+    <Compile Include="Properties\TerminatesProgramAttribute.cs" />
+    <Compile Include="Properties\UsedImplicitlyAttribute.cs" />
+    <Compile Include="Properties\ValueProviderAttribute.cs" />
+    <Compile Include="Properties\XamlItemBindingOfItemsControlAttribute.cs" />
+    <Compile Include="Properties\XamlItemsControlAttribute.cs" />
+    <Compile Include="RelayCommand.cs" />
+    <Compile Include="ViewModelBase.cs" />
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainViewModel.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PokemonLinkViewModel.cs" />
+    <Compile Include="PokemonViewModel.cs" />
+    <Compile Include="Properties\CanBeNullAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

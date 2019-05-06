@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokeBrowser", "PokeBrowser\PokeBrowser.csproj", "{75CC5F74-535F-4C09-B7F1-04B1FBB3447D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75CC5F74-535F-4C09-B7F1-04B1FBB3447D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75CC5F74-535F-4C09-B7F1-04B1FBB3447D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75CC5F74-535F-4C09-B7F1-04B1FBB3447D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75CC5F74-535F-4C09-B7F1-04B1FBB3447D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {66DEB0EE-F264-483A-9556-ACAE0B4AF3F9}
+	EndGlobalSection
+EndGlobal
