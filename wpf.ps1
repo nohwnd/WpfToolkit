@@ -21,70 +21,88 @@ Add-Type -Path  "$PSScriptRoot\WpfInPowerShell\Toolkit\bin\Debug\Toolkit.dll"
     # user passes two scriptblocks
     param ($work, $callback)
 
-    Write-Host work: "{" $work "}"
-
-    [scriptblock]::Create("
-        param(`$this, `$o)
+    $scriptRoot = $PSScriptRoot
+    {
+        param($this, $o)
+        function log ($string) {
+            $string | Out-File -FilePath "$PSScriptRoot\log.txt" -Append
+        }
         try {
-            `$callback = { $callback }
-            Write-Debug 'Invoking background task'
+            log "Invoking background task"
+            log "`$this: $($this | Out-String)"
+            log "`$o: $($o | Out-String)"
+            log "`$callback: { $($callback | Out-String) }"
 
             # store view model into hashtable so we can access 
             # it in the target runspace
 
             # also store the callback that we will invoke via
             # dispatcher when the main work is done
-            `$syncHash = [hashtable]::Synchronized(@{ 
-                This = `$this
-                Object = `$o
-                CallBack = `$callback
+            $syncHash = [hashtable]::Synchronized(@{ 
+                This = $this
+                Work = $work
+                Object = $o
+                CallBack = $callback
+                Root = $scriptRoot
              })
 
-            `$psCmd = [powershell]::Create()
-            `$newRunspace = [RunspaceFactory]::CreateRunspace()
-            `$newRunspace.Open()
+            $psCmd = [powershell]::Create()
+            $newRunspace = [RunspaceFactory]::CreateRunspace()
+            $newRunspace.Open()
             
-            `$newRunspace.SessionStateProxy.SetVariable('syncHash', `$syncHash) 
-            `$psCmd.Runspace = `$newRunspace
+            $newRunspace.SessionStateProxy.SetVariable('syncHash', $syncHash) 
+            $psCmd.Runspace = $newRunspace
 
-            `$sb = [scriptblock]::Create({
-                function log (`$string) {
-                    `$string | Out-File -FilePath '$PSScriptRoot\log.txt' -Append
+            $sb = {
+                $o = $syncHash.Object
+                $this = $syncHash.This
+                $root = $syncHash.Root
+
+                function log ($string) {
+                    $string | Out-File -FilePath "$root\log.txt" -Append
                 }
-
-                `$this = `$syncHash.This
-                `$work = { $work }
+                # unbind those scriptblocks otherwise they would get bound to the 
+                # original scope and block the execution
+                $work = [ScriptBlock]::Create($syncHash.Work)
+                $callback = [ScriptBlock]::Create($syncHash.Callback)
             
-                function Dispatch (`$ScriptBlock) {
-                    `[System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke(`$ScriptBlock)
-                }
-
                 # invoke the main work
                 try {
-                    &`$work `$this `$o
+                    $functionsToDefine = @{
+                        Log = {
+                            param($string)
+                            $string | Out-File -FilePath "$root\log.txt" -Append
+                        }
+                        Dispatch = {
+                            param($ScriptBlock) 
+                            [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke($ScriptBlock)
+                        }
+                    }
+                    $variablesToDefine = [Collections.Generic.List[psvariable]]@()
+                    $variablesToDefine.Add((Get-Variable "Root"))
+                    $arguments = [Object[]]@($this, $o)
+
+                    $output = $work.InvokeWithContext($functionsToDefine, $variablesToDefine, $arguments)
                 }
                 catch {
-                    log `"Invoking work failed with error `$(`$error | Out-String)`"
+                    log "Invoking work failed with error $($error | Out-String)"
                 }
+                
                 try {  
-                    [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke({ 
-                        function log (`$string) {
-                            `$string | Out-File -FilePath '$PSScriptRoot\log.txt' -Append
-                        }
-                        `$callback = { $callback }
-                        &`$callback `$syncHash.This 
+                    [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke({
+                        &$callback $syncHash.This $output
                     })
                 }
                 catch {
-                    log `"Invoking callback failed with error `$(`$error | Out-String)`"
+                    log "Invoking callback failed with error $($error | Out-String)"
                 }   
-            })
+            }.GetNewClosure()
         
-            `$psCmd.AddScript(`$sb)
-            `$psCmd.BeginInvoke()
+            $psCmd.AddScript($sb)
+            $psCmd.BeginInvoke()
         }
         catch {
-            log `"Invoking background task failed with error `$(`$error | Out-String)`"
-        }    
-        ")
+            log "Invoking background task failed with error $($error | Out-String)"
+        }
+    }.GetNewClosure()
 }
