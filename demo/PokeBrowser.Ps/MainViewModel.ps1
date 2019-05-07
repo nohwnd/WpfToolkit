@@ -2,9 +2,11 @@
     [Windows.Input.ICommand] $Refresh 
     [Windows.Input.ICommand] $Show
 
-    [Collections.ObjectModel.ObservableCollection[object]] $PokemonList 
-    [object] $Selected
-    [PokemonViewModel] $Detail
+    # suprisingly it works without actual types
+    $PokemonList 
+    $Selected
+    $Detail
+
     [Windows.Visibility] $ProgressVisibility
 
     [String] $_root = $PSScriptRoot
@@ -26,8 +28,7 @@
                 $pokemon = Get-Pokemon     
                 Start-Sleep -Seconds 1     
                 
-                $collection = [Collections.ObjectModel.ObservableCollection[object]]::new($pokemon)
-                $this.SetPokemonList($collection)
+                $this.SetPokemonList($pokemon)
                 $this.SetSelected(($pokemon | Select -First 1))       
             }
             finally { 
