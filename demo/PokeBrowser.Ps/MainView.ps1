@@ -1,7 +1,7 @@
 ﻿[string]$xaml = @"
 <Window 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    Title="Poke Browser" Height="450" Width="800">
+    Title="Poke Browser" Height="700" Width="800">
 
     <DockPanel>
         <ProgressBar DockPanel.Dock="Bottom" Visibility="{Binding ProgressVisibility}" 

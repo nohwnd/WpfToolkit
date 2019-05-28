@@ -1,4 +1,4 @@
-﻿Add-Type -AssemblyName PresentationFramework
+﻿Add-Type -AssemblyName PresentationFramework, WindowsBase
 
 Add-Type -TypeDefinition "
 using System;
@@ -54,54 +54,57 @@ function Notifize {
     )
 
     process {
+        
         $vm = [Wpf.ViewModel]::new()
         foreach ($p in $PSObject.PSObject.Properties) 
         {
-         
-            $vm.PSObject.Properties.Add($p) 
+            $PropertyName = $p.Name
+
             if ($p.IsInstance -and $p.IsGettable -and $p.IsSettable) {
+                $vm | Add-Member -MemberType NoteProperty -Name $p.Name -Value $p.Value
+
                 if ($p.Value -is [Wpf.RelayCommand]) {
                     $p.Value.Self = $vm
                 }
-
-                $propertyName = $p.Name
+            
                 $vm | 
                     Add-Member -MemberType ScriptMethod -Name "Set$PropertyName" -Value ([ScriptBlock]::Create("
                         param(`$value)
                         Write-Host 'Notifying $PropertyName'
+                        Write-host (`$this | out-string)
                         `$this.'$PropertyName' = `$value
                         `$this.OnPropertyChanged('$PropertyName')
+                        Write-Host 'Notified $PropertyName'
                     "))
             }
         }
 
-        $vm
+        [PSCustomObject]@{ o = $vm }
     }
 }
 
 
 [string]$xaml = @"
-<Window 
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    Height="450" Width="800">
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
     <StackPanel>
-        <Button Command="{Binding Change}"/>
-        <Label FontSize="48" Content="{Binding Text}" />
+        <Label Content="{Binding o.ProcessName}" />
+        <Button Command="{Binding o.Change}" />
     </StackPanel>
-    </Window>
+</Window>
 "@
 
-$o = [pscustomobject]@{
-    Text = "txt"
-    Change = [Wpf.RelayCommand]::new({param ($this, $o) $this.SetText("FFFFFFF") }, { $true })
-} 
+$o = [PSCustomObject] @{ 
+    ProcessName = "Process1" 
+    Change = [Wpf.RelayCommand]::new({param($this, $o) $this.SetProcessName("n") }, {$true})
+} | Notifize
 
-$vm = $o | Notifize
-
-
+# log binding errors
+[Diagnostics.PresentationTraceSources]::Refresh()
+[Diagnostics.PresentationTraceSources]::DataBindingSource.Listeners.Add([Diagnostics.ConsoleTraceListener]::new())
+[Diagnostics.PresentationTraceSources]::DataBindingSource.Switch.Level = "Warning, Error"
 
 $Window = [Windows.Markup.XamlReader]::Parse($xaml)
-$Window.DataContext = $vm[0]
+$Window.DataContext = $o
 $Window.ShowDialog()
 
 
